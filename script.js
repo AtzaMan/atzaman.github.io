@@ -47,7 +47,9 @@ let options = {
   password: ''
 }
 // topic to subscribe to when you connect:
-let topic = 'ncratleos';
+let start_topic = 'ncratleos';
+let request_topic = 'qlid_request';
+let response_topic = 'qlid_response';
 // divs to show messages:
 let localDiv, remoteDiv;
 // whether the client should be publishing or not:
@@ -81,6 +83,17 @@ function loop() {
   }
 }
 
+function start() {
+  // if the client is connected, publish:
+  if (client.connected && publishing) {
+    let thisMessage = 'QR Code Scanner connected to MQTT broker';
+    // publish to broker:
+    client.publish(start_topic, thisMessage);
+    // update localDiv text:
+    localDiv.innerHTML = 'published to broker.'
+  }
+}
+
 // changes the status of the publishing variable
 // on a click of the publishStatus button:
 function changeSendStatus(target) {
@@ -99,7 +112,9 @@ function onConnect() {
   // update localDiv text:
   localDiv.innerHTML = 'connected to broker. Subscribing...'
   // subscribe to the topic:
-  client.subscribe(topic, onSubscribe);
+  client.subscribe(start_topic, onSubscribe);
+  client.subscribe(response_topic, onSubscribe);
+  start();
 }
 
 // handler for mqtt disconnect event:
@@ -139,9 +154,12 @@ function onMessage(topic, payload, packet) {
   result += '</ul>';
   // update the remote div text:
   remoteDiv.innerHTML = result;
+  QRCodeVoucherResponse.value = payload.toString();
+  scannedTextMemo.value = '';
+  document.getElementById("publishStatus").click();  //start publishing
 }
 
 // on page load, call the setup function:
 document.addEventListener('DOMContentLoaded', setup);
 // run a loop every 2 seconds:
-setInterval(loop, 2000);
+// setInterval(loop, 2000);

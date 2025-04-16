@@ -44,8 +44,8 @@
       </div>
       <br>
       <button id="publishStatus" onclick="changeSendStatus(this)">stop publishing</button>
-      <div id="local"></div>
-      <div id="remote"></div>
+      <div id="local" style="display: none;"></div>
+      <div id="remote" style="display: none;"></div>
       <div class="row-element">
         <div class="qrscanner" id="scanner">
         </div>
@@ -77,44 +77,34 @@
       <br>
     </div>
   <script type="text/javascript">
-    /*
-    var client = new Paho.MQTT.Client('mqtt.flespi.io', 80, '/mqtt', 'ncratleos_scanner');
-    client.onConnectionLost = onConnectionLost;
-    client.onMessageArrived = onMessageArrived;
-    client.username = 'OK6tJ2nhulcncMpbtOBfhKxvZdQhbC4J2nynXA2bfhMD5tCf9tDSJC6QQPAV5kzH';
-    client.password = '';
-    client.connect({onSuccess:onConnect});
-    
-    function onConnect() {
-      // Once a connection has been made, make a subscription and send a message.
-      console.log("Connecting to MQTT broker...");
-      client.subscribe("qlid_response");
-      client.subscribe("ncratleos");
-      message = new Paho.MQTT.Message("QR Code Scanner connected to MQTT broker");
-      message.destinationName = "ncratleos";
-      client.send(message);
-    }
-
-    function onConnectionLost(responseObject) {
-      if (responseObject.errorCode !== 0) {
-        console.log("onConnectionLost:"+responseObject.errorMessage);
-      }
-    }
-
-    function onMessageArrived(message) {
-      console.log("onMessageArrived:"+message.payloadString);
-    }
-    */
     function onQRCodeScanned(scannedText)
     {
     	var scannedTextMemo = document.getElementById("scannedTextMemo");
+
+      if(
+        scannedText != '' 
+        && 
+        scannedTextMemo.value != scannedText
+      ){  
+
+        client.publish(
+          'qlid_request', 
+          scannedText+"_food_salty", 
+          {
+            qos: 1, 
+            retain: false
+          }, 
+          function() {
+            console.log("QR code text sent");
+            document.getElementById("publishStatus").click(); //stop publishing
+          }
+        );
+      }
+
     	if(scannedTextMemo)
     	{
     		scannedTextMemo.value = scannedText;
     	}
-      if(scannedText != ''){
-
-      }
 
     	var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
     	if(QRCodeVoucherResponse)
