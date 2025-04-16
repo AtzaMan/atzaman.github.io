@@ -58,8 +58,9 @@
             </div>
           </div>
           <div class="FlexPanel form-field-input-panel">
-            <textarea id="scannedTextMemo" class="textInput form-memo form-field-input textInput-readonly" rows="3" readonly>
+            <textarea id="scannedTextMemo" class="textInput form-memo form-field-input" rows="3">
             </textarea>
+            <button id="publish" onclick="onQRCodeScanned('')">send QLID</button>
           </div>
         </div>
         <div class="form-field form-field-memo">
@@ -82,14 +83,25 @@
     	var scannedTextMemo = document.getElementById("scannedTextMemo");
 
       if(
-        scannedText != '' 
-        && 
+        (
+          (scannedText == '' && scannedTextMemo.value != '')
+          ||
+          (scannedText != '' && scannedTextMemo.value == '')
+        )
+        &&
         scannedTextMemo.value != scannedText
       ){  
-
+        if(scannedText == '')
+        {
+          sendText = scannedTextMemo.value;
+        }
+        else
+        {
+          sendText = scannedText;
+        }
         client.publish(
           'qlid_request', 
-          scannedText+"_food_salty", 
+          sendText+"_food_salty", 
           {
             qos: 1, 
             retain: false
