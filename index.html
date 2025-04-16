@@ -3,28 +3,27 @@
 <!-- browser's rendering engine into                -->
 <!-- "Standards Mode". Replacing this declaration   -->
 <!-- with a "Quirks Mode" doctype is not supported. -->
-
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Janusz Białobrzewski" />
+    <meta name="author" content="Aleksandar Dordevic, ad185297" />
     <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="JsQRScanner.css">
-
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
-    <title>JsQRScanner example</title>
-    
+    <title>NCR Atleos QR Code Voucher Scanner</title>
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
     <script type="text/javascript" src="jsqrscanner.nocache.js"></script>
+    <!-- <script type="text/javascript" src="mqttws31.min.js"></script> -->
+    <script src="mqtt.min.js"></script>
+    <script src="script.js"></script>
   </head>
   <body>
-
     <div class="row-element-set row-element-set-QRScanner">
     <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
     <noscript>
@@ -33,17 +32,20 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-      <h1>JsQRScanner example</h1>
+      <h1>NCR Atleos QR Code Voucher Scanner</h1>
       <div class="row-element">
         <div class="FlexPanel detailsPanel QRScannerShort">
           <div class="FlexPanel shortInfoPanel">
             <div class="gwt-HTML">
-              Point the webcam to a QR code.
+              Point the camera to a QR code.
             </div>
           </div>
         </div>
       </div>
       <br>
+      <button id="publishStatus" onclick="changeSendStatus(this)">stop publishing</button>
+      <div id="local"></div>
+      <div id="remote"></div>
       <div class="row-element">
         <div class="qrscanner" id="scanner">
         </div>
@@ -52,7 +54,7 @@
         <div class="form-field form-field-memo">
           <div class="form-field-caption-panel">
             <div class="gwt-Label form-field-caption">
-              Scanned text
+              Scanned text:
             </div>
           </div>
           <div class="FlexPanel form-field-input-panel">
@@ -63,19 +65,46 @@
         <div class="form-field form-field-memo">
           <div class="form-field-caption-panel">
             <div class="gwt-Label form-field-caption">
-              Scanned text history
+              Voucher Validation:
             </div>
           </div>
           <div class="FlexPanel form-field-input-panel">
-            <textarea id="scannedTextMemoHist" class="textInput form-memo form-field-input textInput-readonly" value="" rows="6" readonly>
+            <textarea id="QRCodeVoucherResponse" class="textInput form-memo form-field-input textInput-readonly" value="" rows="6" readonly>
             </textarea>
           </div>
         </div>
       </div>
       <br>
-      <a style="font-weight: bold;" href="https://github.com/jbialobr/JsQRScanner">The source code is hosted on GitHub</a>
     </div>
   <script type="text/javascript">
+    /*
+    var client = new Paho.MQTT.Client('mqtt.flespi.io', 80, '/mqtt', 'ncratleos_scanner');
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    client.username = 'OK6tJ2nhulcncMpbtOBfhKxvZdQhbC4J2nynXA2bfhMD5tCf9tDSJC6QQPAV5kzH';
+    client.password = '';
+    client.connect({onSuccess:onConnect});
+    
+    function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("Connecting to MQTT broker...");
+      client.subscribe("qlid_response");
+      client.subscribe("ncratleos");
+      message = new Paho.MQTT.Message("QR Code Scanner connected to MQTT broker");
+      message.destinationName = "ncratleos";
+      client.send(message);
+    }
+
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:"+responseObject.errorMessage);
+      }
+    }
+
+    function onMessageArrived(message) {
+      console.log("onMessageArrived:"+message.payloadString);
+    }
+    */
     function onQRCodeScanned(scannedText)
     {
     	var scannedTextMemo = document.getElementById("scannedTextMemo");
@@ -83,10 +112,14 @@
     	{
     		scannedTextMemo.value = scannedText;
     	}
-    	var scannedTextMemoHist = document.getElementById("scannedTextMemoHist");
-    	if(scannedTextMemoHist)
+      if(scannedText != ''){
+
+      }
+
+    	var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
+    	if(QRCodeVoucherResponse)
     	{
-    		scannedTextMemoHist.value = scannedTextMemoHist.value + '\n' + scannedText;
+    		QRCodeVoucherResponse.value = QRCodeVoucherResponse.value + '\n' + scannedText;
     	}
     }
     
