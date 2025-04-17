@@ -43,7 +43,7 @@
         </div>
       </div>
       <br>
-      <button id="publishStatus" onclick="changeSendStatus(this)">start publishing</button>
+      <button type="button" id="publishStatus" onclick="changeSendStatus(this)" style="display: none;">start publishing</button>
       <div id="local" style="display: none;"></div>
       <div id="remote" style="display: none;"></div>
       <div class="row-element">
@@ -61,6 +61,11 @@
             <textarea id="scannedTextMemo" class="textInput form-memo form-field-input" rows="3">
             </textarea>
             <button id="publish" onclick="onQRCodeScanned('')">send QLID</button>
+            <select id="food_type">
+              <option value="salty">Salty food</option>
+              <option value="sweet">Sweet food</option>
+              <!-- <option value="drink">Drink</option> -->
+            </select>
           </div>
         </div>
         <div class="form-field form-field-memo">
@@ -81,6 +86,7 @@
     function onQRCodeScanned(scannedText)
     {
     	var scannedTextMemo = document.getElementById("scannedTextMemo");
+      var food_type = document.getElementById("food_type").value;
 
       if(
         (
@@ -101,7 +107,7 @@
         }
         client.publish(
           'qlid_request', 
-          sendText+"_food_salty", 
+          sendText+"_food_"+food_type, 
           {
             qos: 1, 
             retain: false
