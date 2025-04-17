@@ -155,6 +155,14 @@ function onMessage(topic, payload, packet) {
   // update the remote div text:
   remoteDiv.innerHTML = result;
   QRCodeVoucherResponse.value = payload.toString();
+  if( 
+    !payload.toString().includes('Checking voucher status for') 
+    &&
+    !payload.toString().includes('QR Code Scanner connected to MQTT broker') 
+  ){
+    alert(payload.toString());
+  }
+  
   scannedTextMemo.value = '';
   document.getElementById("publishStatus").click();  //start publishing
 }
