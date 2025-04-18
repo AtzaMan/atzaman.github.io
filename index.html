@@ -43,7 +43,7 @@
         </div>
       </div>
       <br>
-      <button type="button" id="publishStatus" onclick="changeSendStatus(this)" style="display: none;">start publishing</button>
+      <button type="button" id="publishStatus" onclick="changeSendStatus(this)" style="opacity: 0;">start publishing</button>
       <div id="local" style="display: none;"></div>
       <div id="remote" style="display: none;"></div>
       <div class="row-element">
@@ -68,7 +68,7 @@
             </select>
           </div>
         </div>
-        <div class="form-field form-field-memo" style="display: none;">
+        <div class="form-field form-field-memo" id="validation">
           <div class="form-field-caption-panel">
             <div class="gwt-Label form-field-caption">
               Voucher Validation:
@@ -82,6 +82,11 @@
       </div>
       <br>
     </div>
+    <style>
+      #validation {
+        display: none;
+      }
+    </style>
   <script type="text/javascript">
     function onQRCodeScanned(scannedText)
     {

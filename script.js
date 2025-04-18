@@ -155,12 +155,18 @@ function onMessage(topic, payload, packet) {
   // update the remote div text:
   remoteDiv.innerHTML = result;
   QRCodeVoucherResponse.value = payload.toString();
-  if( 
-    !payload.toString().includes('Checking voucher status for') 
-    &&
-    !payload.toString().includes('QR Code Scanner connected to MQTT broker') 
-  ){
-    alert(payload.toString());
+  let food_type = document.getElementById("food_type").value;
+
+  if (
+    (
+      payload.toString().includes('saltyfood') 
+      || 
+      payload.toString().includes('sweetfood')
+    )
+    && payload.toString().includes(food_type)
+  ) {
+    let alert_message = payload.toString().replace('food', ' food');
+    alert(alert_message);
   }
   
   scannedTextMemo.value = '';
