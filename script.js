@@ -156,12 +156,14 @@ function onMessage(topic, payload, packet) {
   remoteDiv.innerHTML = result;
   QRCodeVoucherResponse.value = payload.toString();
   let food_type = document.getElementById("food_type").value;
-
+  console.log(payload.toString());
   if (
     (
       payload.toString().includes('saltyfood') 
       || 
       payload.toString().includes('sweetfood')
+      || 
+      payload.toString().includes(' food')
     )
     && payload.toString().includes(food_type)
   ) {
