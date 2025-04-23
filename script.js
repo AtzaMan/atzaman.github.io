@@ -41,7 +41,7 @@ let options = {
   connectTimeout: 10000,
   // Authentication
   // add a random number for a unique client ID:
-  clientId: 'mqttJsClient' ,
+  clientId: 'mqttJsClient_'+ Math.random().toString(16),
   // add these in for public.cloud.shiftr.io:
   username: 'OK6tJ2nhulcncMpbtOBfhKxvZdQhbC4J2nynXA2bfhMD5tCf9tDSJC6QQPAV5kzH',
   password: ''
