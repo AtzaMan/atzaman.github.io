@@ -159,9 +159,9 @@ function onMessage(topic, payload, packet) {
   console.log(payload.toString());
   if (
     (
-      payload.toString().includes('saltyfood') 
+      payload.toString().includes('salty') 
       || 
-      payload.toString().includes('sweetfood')
+      payload.toString().includes('sweet')
       || 
       payload.toString().includes(' food')
     )
