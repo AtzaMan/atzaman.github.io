@@ -167,7 +167,7 @@ function onMessage(topic, payload, packet) {
     )
     && payload.toString().includes(food_type)
   ) {
-    let alert_message = payload.toString().replace('food', ' food');
+    let alert_message = payload.toString();
     QRCodeVoucherResponse.value = alert_message;
     // alert(alert_message);
   }
