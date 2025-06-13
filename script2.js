@@ -173,7 +173,14 @@ function onMessage(topic, payload, packet) {
   }
   
   // scannedTextMemo.value = '';
-  document.getElementById("publishStatus").click();  //start publishing
+  console.log(
+    'scannedTextMemo: ' + scannedTextMemo.value.trim(),
+    'lastscannedQLID: ' + lastscannedQLID
+  );
+  if (scannedTextMemo.value.trim() != lastscannedQLID) {
+    document.getElementById("publishStatus").click();  //start publishing
+  }
+  
 }
 
 // on page load, call the setup function:

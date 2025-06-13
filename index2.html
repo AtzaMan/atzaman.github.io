@@ -115,7 +115,10 @@
         textToSubmit = scannedTextMemo.value;
       }
 
-      if (textToSubmit.trim() !== '') {
+      if (
+        textToSubmit.trim() !== ''
+        && lastscannedQLID != textToSubmit
+      ) {
         if (client && client.connected) {
           client.publish(
             current_request_topic,
@@ -132,32 +135,18 @@
                   QRCodeVoucherResponse.value = "Error sending QLID. Please try again.\nDetails: " + error.toString();
                 }
               } else {
-                if (
-                  scannedText.trim() !== ''
-                  && lastscannedQLID == scannedText.trim()
-                ) {
-                  console.log("QLID already sent: " + scannedTextMemo.value);
+                if (QRCodeVoucherResponse) {
+                  document.getElementById("publishStatus").click();
+                  console.log("Sending QLID for validation: " + scannedText.trim());                    
+                  lastscannedQLID = scannedText.trim(); // Store the last scanned QLID
                   console.log(
                     "scannedTextMemo: " + scannedTextMemo.value.trim(), 
                     "scannedText: " + scannedText.trim(),
                     "lastscannedQLID: " + lastscannedQLID
-                  );
-                  if (QRCodeVoucherResponse) {
-                    // QRCodeVoucherResponse.value = "QLID already sent. Waiting for validation...";
-                  }
-                } else {
-                  if (QRCodeVoucherResponse) {
-                    document.getElementById("publishStatus").click();
-                    console.log("Sending QLID for validation: " + scannedText.trim());                    
-                    lastscannedQLID = scannedText.trim(); // Store the last scanned QLID
-                    console.log(
-                      "scannedTextMemo: " + scannedTextMemo.value.trim(), 
-                      "scannedText: " + scannedText.trim(),
-                      "lastscannedQLID: " + lastscannedQLID
-                    );                    
-                    // QRCodeVoucherResponse.value = "QLID sent successfully. Waiting for validation...";
-                  }
+                  );                    
+                  // QRCodeVoucherResponse.value = "QLID sent successfully. Waiting for validation...";
                 }
+                
                 // console.log("QLID sent: " + textToSubmit);
                 // Optional: Indicate that the QLID was sent and awaiting response
                 // if (QRCodeVoucherResponse) {
