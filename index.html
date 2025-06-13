@@ -83,57 +83,96 @@
       <br>
     </div>
     <style>
-      #validation,#local,#remote {
+      /* #validation, */
+	  #local,#remote {
         display: none;
       }
     </style>
   <script type="text/javascript">
+    var lastscannedQLID = '';
+    // This function is called when the QR code is scanned
     function onQRCodeScanned(scannedText)
     {
-    	var scannedTextMemo = document.getElementById("scannedTextMemo");
+      var scannedTextMemo = document.getElementById("scannedTextMemo");
       var food_type = document.getElementById("food_type").value;
+      var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
+      // Use the request_topic defined in script2.js, or a fallback if not available
+      const current_request_topic = typeof request_topic !== 'undefined' ? request_topic : 'qlid_request';
 
-      if(
-        (
-          (scannedText == '' && scannedTextMemo.value != '')
-          ||
-          (scannedText != '' && scannedTextMemo.value == '')
-        )
-        &&
-        scannedTextMemo.value != scannedText
-      ){  
-        if(scannedText == '')
-        {
-          sendText = scannedTextMemo.value;
-        }
-        else
-        {
-          sendText = scannedText;
-        }
-        client.publish(
-          'qlid_request', 
-          sendText+"_food_"+food_type, 
-          {
-            qos: 1, 
-            retain: false
-          }, 
-          function() {
-            console.log("QR code text sent");
-            document.getElementById("publishStatus").click(); //stop publishing
-          }
-        );
+      // 1. Clear previous validation message or error from QRCodeVoucherResponse
+      // if (QRCodeVoucherResponse) {
+      //   QRCodeVoucherResponse.value = '';
+      // }
+
+      let textToSubmit = '';
+
+      if (scannedText && scannedText.trim() !== '') {
+        // Text came from QR scanner
+        scannedTextMemo.value = scannedText; // Update the memo field
+        textToSubmit = scannedText;
+      } else if (scannedTextMemo.value && scannedTextMemo.value.trim() !== '') {
+        // No text from scanner, attempt to use text from memo (manual submission)
+        textToSubmit = scannedTextMemo.value;
       }
 
-    	if(scannedTextMemo)
-    	{
-    		scannedTextMemo.value = scannedText;
-    	}
-
-    	var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
-    	if(QRCodeVoucherResponse)
-    	{
-    		QRCodeVoucherResponse.value = QRCodeVoucherResponse.value + '\n' + scannedText;
-    	}
+      if (
+        textToSubmit.trim() !== ''
+        && lastscannedQLID != textToSubmit
+      ) {
+        if (client && client.connected) {
+          client.publish(
+            current_request_topic,
+            textToSubmit + "_food_" + food_type,
+            {
+              qos: 1,
+              retain: false
+            },
+            function(error) {
+              if (error) {
+                console.error("Failed to publish QLID:", error);
+                if (QRCodeVoucherResponse) {
+                  // Display publish error in the validation text area
+                  QRCodeVoucherResponse.value = "Error sending QLID. Please try again.\nDetails: " + error.toString();
+                }
+              } else {
+                if (QRCodeVoucherResponse) {
+                  document.getElementById("publishStatus").click();
+                  console.log("Sending QLID for validation: " + scannedText.trim());                    
+                  lastscannedQLID = scannedText.trim(); // Store the last scanned QLID
+                  console.log(
+                    "scannedTextMemo: " + scannedTextMemo.value.trim(), 
+                    "scannedText: " + scannedText.trim(),
+                    "lastscannedQLID: " + lastscannedQLID
+                  );                    
+                  // QRCodeVoucherResponse.value = "QLID sent successfully. Waiting for validation...";
+                }
+                
+                // console.log("QLID sent: " + textToSubmit);
+                // Optional: Indicate that the QLID was sent and awaiting response
+                // if (QRCodeVoucherResponse) {
+                //   QRCodeVoucherResponse.value = "QLID sent. Waiting for validation...";
+                // }
+                // The existing click on publishStatus button:
+                
+                // Optionally, clear the memo field after sending
+                // scannedTextMemo.value = '';
+              }
+            }
+          );
+        } else {
+          console.error("MQTT client not connected. Cannot send QLID.");
+          if (QRCodeVoucherResponse) {
+            QRCodeVoucherResponse.value = "Not connected to server. Please check connection and try again.";
+          }
+        }
+      } else {
+        console.log("No QLID to send (input is empty).");
+        // Optionally provide feedback if nothing was sent
+        // if (QRCodeVoucherResponse) {
+        //   QRCodeVoucherResponse.value = "Please scan a QR code or enter a QLID.";
+        // }
+      }
+      // The onMessage function in script2.js will clear scannedTextMemo.value after processing the response.
     }
     
     function provideVideo()

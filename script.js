@@ -154,25 +154,33 @@ function onMessage(topic, payload, packet) {
   result += '</ul>';
   // update the remote div text:
   remoteDiv.innerHTML = result;
-  QRCodeVoucherResponse.value = payload.toString();
+  // QRCodeVoucherResponse.value = payload.toString();
   let food_type = document.getElementById("food_type").value;
   console.log(payload.toString());
   if (
     (
-      payload.toString().includes('saltyfood') 
+      payload.toString().includes('salty') 
       || 
-      payload.toString().includes('sweetfood')
+      payload.toString().includes('sweet')
       || 
       payload.toString().includes(' food')
     )
     && payload.toString().includes(food_type)
   ) {
-    let alert_message = payload.toString().replace('food', ' food');
-    alert(alert_message);
+    let alert_message = payload.toString();
+    QRCodeVoucherResponse.value = alert_message;
+    // alert(alert_message);
   }
   
-  scannedTextMemo.value = '';
-  document.getElementById("publishStatus").click();  //start publishing
+  // scannedTextMemo.value = '';
+  console.log(
+    'scannedTextMemo: ' + scannedTextMemo.value.trim(),
+    'lastscannedQLID: ' + lastscannedQLID
+  );
+  if (scannedTextMemo.value.trim() != lastscannedQLID) {
+    document.getElementById("publishStatus").click();  //start publishing
+  }
+  
 }
 
 // on page load, call the setup function:
