@@ -172,7 +172,7 @@ function onMessage(topic, payload, packet) {
     // alert(alert_message);
   }
   
-  scannedTextMemo.value = '';
+  // scannedTextMemo.value = '';
   document.getElementById("publishStatus").click();  //start publishing
 }
 

@@ -89,9 +89,11 @@
       }
     </style>
   <script type="text/javascript">
+    var lastscannedQLID = '';
+    // This function is called when the QR code is scanned
     function onQRCodeScanned(scannedText)
     {
-        var scannedTextMemo = document.getElementById("scannedTextMemo");
+      var scannedTextMemo = document.getElementById("scannedTextMemo");
       var food_type = document.getElementById("food_type").value;
       var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
       // Use the request_topic defined in script2.js, or a fallback if not available
@@ -130,13 +132,41 @@
                   QRCodeVoucherResponse.value = "Error sending QLID. Please try again.\nDetails: " + error.toString();
                 }
               } else {
-                console.log("QLID sent: " + textToSubmit);
+                if (
+                  scannedText.trim() !== ''
+                  && lastscannedQLID == scannedText.trim()
+                ) {
+                  console.log("QLID already sent: " + scannedTextMemo.value);
+                  console.log(
+                    "scannedTextMemo: " + scannedTextMemo.value.trim(), 
+                    "scannedText: " + scannedText.trim(),
+                    "lastscannedQLID: " + lastscannedQLID
+                  );
+                  if (QRCodeVoucherResponse) {
+                    // QRCodeVoucherResponse.value = "QLID already sent. Waiting for validation...";
+                  }
+                } else {
+                  if (QRCodeVoucherResponse) {
+                    document.getElementById("publishStatus").click();
+                    console.log("Sending QLID for validation: " + scannedText.trim());                    
+                    lastscannedQLID = scannedText.trim(); // Store the last scanned QLID
+                    console.log(
+                      "scannedTextMemo: " + scannedTextMemo.value.trim(), 
+                      "scannedText: " + scannedText.trim(),
+                      "lastscannedQLID: " + lastscannedQLID
+                    );                    
+                    // QRCodeVoucherResponse.value = "QLID sent successfully. Waiting for validation...";
+                  }
+                }
+                // console.log("QLID sent: " + textToSubmit);
                 // Optional: Indicate that the QLID was sent and awaiting response
                 // if (QRCodeVoucherResponse) {
                 //   QRCodeVoucherResponse.value = "QLID sent. Waiting for validation...";
                 // }
                 // The existing click on publishStatus button:
-                document.getElementById("publishStatus").click();
+                
+                // Optionally, clear the memo field after sending
+                // scannedTextMemo.value = '';
               }
             }
           );
