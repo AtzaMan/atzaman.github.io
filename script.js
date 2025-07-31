@@ -192,9 +192,9 @@ change_device = function() {
   // get the device value from the select element:
   let device = document.getElementById("device").value;
   // update the request_topic with the new device value:
-  request_topic = 'qlid_request' + '_' + device;
+  request_topic = 'qlid_request_' + device;
   // update the response_topic with the new device value:
-  response_topic = 'qlid_response' + '_' + device;
+  response_topic = 'qlid_response_' + device;
   // unsubscribe from the old topics:
   if(device == '1') {
     client.unsubscribe('qlid_request_2');
