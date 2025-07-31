@@ -114,7 +114,7 @@ function onConnect() {
   // subscribe to the topic:
   let device = document.getElementById("device").value;
   let response_topic = 'qlid_response'+'_'+device; 
-  
+
   client.subscribe(start_topic, onSubscribe);
   client.subscribe(response_topic, onSubscribe);
   start();
@@ -186,6 +186,29 @@ function onMessage(topic, payload, packet) {
     document.getElementById("publishStatus").click();  //start publishing
   }
   
+}
+
+change_device = function() {
+  // get the device value from the select element:
+  let device = document.getElementById("device").value;
+  // update the request_topic with the new device value:
+  request_topic = 'qlid_request' + '_' + device;
+  // update the response_topic with the new device value:
+  response_topic = 'qlid_response' + '_' + device;
+  // unsubscribe from the old topics:
+  if(device == '1') {
+    client.unsubscribe('qlid_request_2');
+    client.unsubscribe('qlid_response_2');
+  }
+  if(device == '2') {
+    client.unsubscribe('qlid_request_1');
+    client.unsubscribe('qlid_response_1');
+  }
+
+  // subscribe to the new topics:
+  client.subscribe(request_topic, onSubscribe);
+  client.subscribe(response_topic, onSubscribe);  
+
 }
 
 // on page load, call the setup function:
