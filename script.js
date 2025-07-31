@@ -112,6 +112,9 @@ function onConnect() {
   // update localDiv text:
   localDiv.innerHTML = 'connected to broker. Subscribing...'
   // subscribe to the topic:
+  let device = document.getElementById("device").value;
+  let response_topic = 'qlid_response'+'_'+device; 
+  
   client.subscribe(start_topic, onSubscribe);
   client.subscribe(response_topic, onSubscribe);
   start();
