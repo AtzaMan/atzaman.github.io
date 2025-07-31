@@ -155,7 +155,7 @@ function onMessage(topic, payload, packet) {
   // update the remote div text:
   remoteDiv.innerHTML = result;
   // QRCodeVoucherResponse.value = payload.toString();
-  let food_type = document.getElementById("food_type").value;
+  let voucher_type = document.getElementById("voucher_type").value;
   console.log(payload.toString());
   if (
     (
@@ -163,9 +163,11 @@ function onMessage(topic, payload, packet) {
       || 
       payload.toString().includes('sweet')
       || 
-      payload.toString().includes(' food')
+      payload.toString().includes('food')
+      || 
+      payload.toString().includes('drink')
     )
-    && payload.toString().includes(food_type)
+    && payload.toString().includes(voucher_type)
   ) {
     let alert_message = payload.toString();
     QRCodeVoucherResponse.value = alert_message;

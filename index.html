@@ -61,7 +61,8 @@
             <textarea id="scannedTextMemo" class="textInput form-memo form-field-input" rows="3">
             </textarea>
             <button id="publish" onclick="onQRCodeScanned('')">send QLID</button>
-            <select id="food_type">
+            <select id="voucher_type">
+              <option value="drink">Drink</option>
               <option value="salty">Salty food</option>
               <option value="sweet">Sweet food</option>
               <!-- <option value="drink">Drink</option> -->
@@ -94,7 +95,7 @@
     function onQRCodeScanned(scannedText)
     {
       var scannedTextMemo = document.getElementById("scannedTextMemo");
-      var food_type = document.getElementById("food_type").value;
+      var voucher_type = document.getElementById("voucher_type").value;
       var QRCodeVoucherResponse = document.getElementById("QRCodeVoucherResponse");
       // Use the request_topic defined in script2.js, or a fallback if not available
       const current_request_topic = typeof request_topic !== 'undefined' ? request_topic : 'qlid_request';
@@ -120,9 +121,14 @@
         && lastscannedQLID != textToSubmit
       ) {
         if (client && client.connected) {
+          if(voucher_type == 'salty' || voucher_type == 'sweet') {
+            textToSubmit += "_food_" + voucher_type;
+          }else{
+            textToSubmit += "_drink";
+          }
           client.publish(
             current_request_topic,
-            textToSubmit + "_food_" + food_type,
+            textToSubmit.trim(),
             {
               qos: 1,
               retain: false
