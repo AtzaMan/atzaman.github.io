@@ -22,6 +22,26 @@
     <!-- <script type="text/javascript" src="mqttws31.min.js"></script> -->
     <script src="mqtt.min.js"></script>
     <script src="script.js"></script>
+    <style>
+      @keyframes red_to_pink {
+        from {background-color: red;}
+        to {background-color: pink;}
+      }
+      @keyframes green_to_lightgreen {
+        from {background-color: green;}
+        to {background-color: lightgreen;}
+      }
+      .valid {
+        background: lightgreen;
+        animation-name: green_to_lightgreen;
+        animation-duration: 10s;
+      }
+      .error {
+        background: pink;
+        animation-name: red_to_pink;
+        animation-duration: 10s;
+      }
+    </style>
   </head>
   <body style="font-family: Sora;">
     <div class="row-element-set row-element-set-QRScanner">
@@ -142,25 +162,16 @@
               } else {
                 if (QRCodeVoucherResponse) {
                   document.getElementById("publishStatus").click();
-                  console.log("Sending QLID for validation: " + scannedText.trim());                    
+                  console.log("Sending QLID for validation: " + scannedText.trim());
                   lastscannedQLID = scannedText.trim(); // Store the last scanned QLID
                   console.log(
-                    "scannedTextMemo: " + scannedTextMemo.value.trim(), 
+                    "scannedTextMemo: " + scannedTextMemo.value.trim(),
                     "scannedText: " + scannedText.trim(),
                     "lastscannedQLID: " + lastscannedQLID
-                  );                    
+                  );
                   // QRCodeVoucherResponse.value = "QLID sent successfully. Waiting for validation...";
                 }
                 
-                // console.log("QLID sent: " + textToSubmit);
-                // Optional: Indicate that the QLID was sent and awaiting response
-                // if (QRCodeVoucherResponse) {
-                //   QRCodeVoucherResponse.value = "QLID sent. Waiting for validation...";
-                // }
-                // The existing click on publishStatus button:
-                
-                // Optionally, clear the memo field after sending
-                // scannedTextMemo.value = '';
               }
             }
           );

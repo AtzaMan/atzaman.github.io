@@ -174,6 +174,15 @@ function onMessage(topic, payload, packet) {
   ) {
     let alert_message = payload.toString();
     QRCodeVoucherResponse.value = alert_message;
+
+    if (alert_message.includes('voucher has already been spent')) {
+      QRCodeVoucherResponse.classList.remove('valid');
+      QRCodeVoucherResponse.classList.add('error');
+    }
+    if (alert_message.includes('Redeemed')) {
+      QRCodeVoucherResponse.classList.remove('error');
+      QRCodeVoucherResponse.classList.add('valid');
+    }
     // alert(alert_message);
   }
   
@@ -188,7 +197,7 @@ function onMessage(topic, payload, packet) {
   
 }
 
-change_device = function() {
+function change_device() {
   // get the device value from the select element:
   let device = document.getElementById("device").value;
   // update the request_topic with the new device value:
