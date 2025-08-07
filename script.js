@@ -176,12 +176,18 @@ function onMessage(topic, payload, packet) {
     QRCodeVoucherResponse.value = alert_message;
 
     if (alert_message.includes('voucher has already been spent')) {
+      QRCodeVoucherResponse.classList.remove('error');
       QRCodeVoucherResponse.classList.remove('valid');
-      QRCodeVoucherResponse.classList.add('error');
+      setTimeout(() => {
+        QRCodeVoucherResponse.classList.add('error');
+      }, 500);
     }
     if (alert_message.includes('Redeemed')) {
+      QRCodeVoucherResponse.classList.remove('valid');
       QRCodeVoucherResponse.classList.remove('error');
-      QRCodeVoucherResponse.classList.add('valid');
+      setTimeout(() => {
+        QRCodeVoucherResponse.classList.add('valid');
+      }, 500);
     }
     // alert(alert_message);
   }
