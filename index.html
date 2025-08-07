@@ -151,7 +151,7 @@
           }
           client.publish(
             'qlid_request_'+device,
-            textToSubmit.trim(),
+            textToSubmit.toLowerCase().trim(),
             {
               qos: 1,
               retain: false
